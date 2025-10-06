@@ -2,13 +2,47 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
+import OwnerDashboard from "./pages/owner/OwnerDashboard";
+import OwnerProperties from "./pages/owner/OwnerProperties";
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import RunnerDashboard from "./pages/runner/RunnerDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import { useAuth } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
+
+// Smart router that redirects to role-specific dashboard
+const SmartDashboardRouter = () => {
+  const { role, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Redirect based on role
+  switch (role) {
+    case "property_owner":
+      return <Navigate to="/owner/dashboard" replace />;
+    case "property_manager":
+      return <Navigate to="/manager/dashboard" replace />;
+    case "property_runner":
+      return <Navigate to="/runner/dashboard" replace />;
+    case "super_admin":
+      return <Navigate to="/admin/dashboard" replace />;
+    default:
+      return <Navigate to="/auth" replace />;
+  }
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -18,14 +52,69 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/auth" element={<Auth />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          
+          {/* Root route - smart redirect based on role */}
           <Route
             path="/"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <SmartDashboardRouter />
               </ProtectedRoute>
             }
           />
+          
+          {/* Property Owner Routes */}
+          <Route
+            path="/owner/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["property_owner"]}>
+                <OwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/properties"
+            element={
+              <ProtectedRoute allowedRoles={["property_owner"]}>
+                <OwnerProperties />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Property Manager Routes */}
+          <Route
+            path="/manager/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["property_manager"]}>
+                <ManagerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Property Runner Routes */}
+          <Route
+            path="/runner/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["property_runner"]}>
+                <RunnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Super Admin Routes */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["super_admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Legacy Dashboard - redirect to role-specific */}
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

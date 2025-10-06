@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const DashboardHeader = () => {
-  const { profile, signOut } = useAuth();
+  const { profile, role, signOut } = useAuth();
 
   const getInitials = () => {
     if (profile?.first_name && profile?.last_name) {
@@ -73,7 +73,7 @@ const DashboardHeader = () => {
                       {profile?.first_name} {profile?.last_name}
                     </p>
                     <p className="text-xs text-muted-foreground capitalize">
-                      {profile?.role?.replace("_", " ")}
+                      {role?.replace("_", " ")}
                     </p>
                   </div>
                 </DropdownMenuLabel>
