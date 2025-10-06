@@ -1,92 +1,65 @@
-import RoleBasedLayout from "@/components/RoleBasedLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, DollarSign, AlertCircle, TrendingUp } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import DashboardHeader from "@/components/DashboardHeader";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Building2, DollarSign, AlertCircle, FileText } from "lucide-react";
 
 const OwnerDashboard = () => {
+  const { profile } = useAuth();
+
+  const stats = [
+    { title: "Total Properties", value: "0", icon: Building2, description: "Managed properties" },
+    { title: "Monthly Income", value: "$0", icon: DollarSign, description: "This month" },
+    { title: "Outstanding Expenses", value: "$0", icon: AlertCircle, description: "Pending" },
+    { title: "Properties Requiring Attention", value: "0", icon: FileText, description: "Action needed" },
+  ];
+
   return (
-    <RoleBasedLayout allowedRoles={["property_owner"]}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Portfolio Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back! Here's your property overview.</p>
+    <div className="min-h-screen bg-background">
+      <DashboardHeader />
+      <main className="container mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {profile?.first_name}!</h1>
+          <p className="text-muted-foreground">Here's your property portfolio overview</p>
         </div>
 
-        {/* Overview Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          {stats.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest updates from your properties</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">
-                All properties in your portfolio
-              </p>
+              <p className="text-muted-foreground text-sm">No recent activity</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Monthly Income</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Common tasks</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">
-                Total rental income this month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Outstanding Expenses</CardTitle>
-              <AlertCircle className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">
-                Pending maintenance and bills
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Portfolio Value</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">
-                Total estimated value
-              </p>
+            <CardContent className="space-y-2">
+              <p className="text-muted-foreground text-sm">Coming soon...</p>
             </CardContent>
           </Card>
         </div>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">Quick actions will appear here</p>
-          </CardContent>
-        </Card>
-
-        {/* Activity Feed */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">No recent activity</p>
-          </CardContent>
-        </Card>
-      </div>
-    </RoleBasedLayout>
+      </main>
+    </div>
   );
 };
 

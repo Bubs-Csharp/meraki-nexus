@@ -1,16 +1,17 @@
-import RoleBasedLayout from "@/components/RoleBasedLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DashboardHeader from "@/components/DashboardHeader";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 const OwnerProperties = () => {
   return (
-    <RoleBasedLayout allowedRoles={["property_owner"]}>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-background">
+      <DashboardHeader />
+      <main className="container mx-auto p-6">
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">My Properties</h1>
-            <p className="text-muted-foreground">Manage your property portfolio</p>
+            <h1 className="text-3xl font-bold mb-2">My Properties</h1>
+            <p className="text-muted-foreground">Manage all your properties</p>
           </div>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -20,14 +21,17 @@ const OwnerProperties = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Properties List</CardTitle>
+            <CardTitle>Properties</CardTitle>
+            <CardDescription>Your property portfolio</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">No properties yet. Add your first property to get started.</p>
+            <p className="text-muted-foreground text-center py-8">
+              No properties yet. Click "Add Property" to get started.
+            </p>
           </CardContent>
         </Card>
-      </div>
-    </RoleBasedLayout>
+      </main>
+    </div>
   );
 };
 

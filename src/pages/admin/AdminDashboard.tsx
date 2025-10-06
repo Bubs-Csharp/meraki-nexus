@@ -1,92 +1,75 @@
-import RoleBasedLayout from "@/components/RoleBasedLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Building, Server, Activity } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import DashboardHeader from "@/components/DashboardHeader";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, Building2, Activity, Settings } from "lucide-react";
 
 const AdminDashboard = () => {
+  const { profile } = useAuth();
+
+  const stats = [
+    { title: "Total Users", value: "0", icon: Users, description: "All roles" },
+    { title: "Active Properties", value: "0", icon: Building2, description: "System-wide" },
+    { title: "System Health", value: "Good", icon: Activity, description: "All systems operational" },
+    { title: "Pending Actions", value: "0", icon: Settings, description: "Admin tasks" },
+  ];
+
   return (
-    <RoleBasedLayout allowedRoles={["super_admin"]}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">System Administration</h1>
-          <p className="text-muted-foreground">Platform overview and management</p>
+    <div className="min-h-screen bg-background">
+      <DashboardHeader />
+      <main className="container mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Super Admin Dashboard</h1>
+          <p className="text-muted-foreground">Welcome, {profile?.first_name}! System overview and administration</p>
         </div>
 
-        {/* Overview Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          {stats.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle>User Management</CardTitle>
+              <CardDescription>Recent user activities</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">
-                All registered users
-              </p>
+              <p className="text-muted-foreground text-sm">No recent activities</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Companies</CardTitle>
-              <Building className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle>Company Management</CardTitle>
+              <CardDescription>Property management companies</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">
-                Management companies
-              </p>
+              <p className="text-muted-foreground text-sm">No companies registered</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">System Health</CardTitle>
-              <Server className="h-4 w-4 text-muted-foreground" />
+            <CardHeader>
+              <CardTitle>System Analytics</CardTitle>
+              <CardDescription>Platform usage statistics</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">100%</div>
-              <p className="text-xs text-muted-foreground">
-                All systems operational
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">
-                Current active users
-              </p>
+              <p className="text-muted-foreground text-sm">Loading analytics...</p>
             </CardContent>
           </Card>
         </div>
-
-        {/* Health Monitoring */}
-        <Card>
-          <CardHeader>
-            <CardTitle>System Monitoring</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">System health metrics will appear here</p>
-          </CardContent>
-        </Card>
-
-        {/* Usage Analytics */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Usage Analytics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">Platform usage statistics will appear here</p>
-          </CardContent>
-        </Card>
-      </div>
-    </RoleBasedLayout>
+      </main>
+    </div>
   );
 };
 

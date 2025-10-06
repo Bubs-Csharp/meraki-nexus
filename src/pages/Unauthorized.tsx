@@ -1,19 +1,23 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ShieldAlert } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Unauthorized = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center space-y-6">
-        <ShieldAlert className="w-20 h-20 text-destructive mx-auto" />
-        <h1 className="text-4xl font-bold text-foreground">Access Denied</h1>
-        <p className="text-muted-foreground max-w-md">
-          You don't have permission to access this page. Please contact your administrator if you believe this is an error.
+      <div className="text-center space-y-6 max-w-md px-4">
+        <ShieldAlert className="mx-auto h-16 w-16 text-muted-foreground" />
+        <h1 className="text-4xl font-bold">Access Denied</h1>
+        <p className="text-muted-foreground text-lg">
+          You don't have permission to access this page.
         </p>
-        <Button asChild>
-          <Link to="/">Return to Dashboard</Link>
-        </Button>
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+        >
+          Go Back
+        </button>
       </div>
     </div>
   );
