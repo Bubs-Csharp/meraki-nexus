@@ -10,6 +10,9 @@ import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import OwnerProperties from "./pages/owner/OwnerProperties";
+import OwnerFinancials from "./pages/owner/OwnerFinancials";
+import OwnerDocuments from "./pages/owner/OwnerDocuments";
+import OwnerCommunications from "./pages/owner/OwnerCommunications";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import RunnerDashboard from "./pages/runner/RunnerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -78,6 +81,30 @@ const App = () => (
             element={
               <ProtectedRoute allowedRoles={["property_owner"]}>
                 <OwnerProperties />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/financials"
+            element={
+              <ProtectedRoute allowedRoles={["property_owner"]}>
+                <OwnerFinancials />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/documents"
+            element={
+              <ProtectedRoute allowedRoles={["property_owner"]}>
+                <OwnerDocuments />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/communications"
+            element={
+              <ProtectedRoute allowedRoles={["property_owner"]}>
+                <OwnerCommunications />
               </ProtectedRoute>
             }
           />
