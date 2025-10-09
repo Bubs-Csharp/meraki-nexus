@@ -1,10 +1,11 @@
 import { useAuth } from "@/hooks/useAuth";
 import DashboardHeader from "@/components/DashboardHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, DollarSign, AlertTriangle, TrendingUp, FileText, MessageSquare } from "lucide-react";
+import { Building2, DollarSign, AlertCircle, TrendingUp, FileText, MessageSquare, AlertTriangle, Receipt, Home, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
 const OwnerDashboard = () => {
@@ -64,146 +65,196 @@ const OwnerDashboard = () => {
     r => r.status === "pending" || r.status === "in_progress"
   ).length || 0;
 
-  const stats = [
-    {
-      title: "Total Properties",
-      value: properties?.length || 0,
-      icon: Building2,
-      description: "Active properties",
-      trend: "+0%",
-    },
-    {
-      title: "Net Income",
-      value: `$${netIncome.toLocaleString()}`,
-      icon: DollarSign,
-      description: "This month",
-      trend: "+12.5%",
-    },
-    {
-      title: "Pending Maintenance",
-      value: pendingMaintenance,
-      icon: AlertTriangle,
-      description: "Requires attention",
-      trend: "-8%",
-    },
-    {
-      title: "Portfolio Value",
-      value: `$${(properties?.reduce((sum, p) => sum + Number(p.current_value || 0), 0) || 0).toLocaleString()}`,
-      icon: TrendingUp,
-      description: "Total value",
-      trend: "+5.2%",
-    },
-  ];
+  const portfolioValue = properties?.reduce((sum, p) => sum + Number(p.current_value || 0), 0) || 0;
 
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
-      <main className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Property Portfolio Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome back, {profile?.first_name}! Here's your property overview.
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.description}</p>
-                <p className="text-xs text-green-600 mt-1">{stat.trend} from last month</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="col-span-2">
-            <CardHeader>
-              <CardTitle>Recent Financial Activity</CardTitle>
-              <CardDescription>Latest transactions across your properties</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {financialData && financialData.length > 0 ? (
-                <div className="space-y-4">
-                  {financialData.slice(0, 5).map((transaction) => (
-                    <div key={transaction.id} className="flex items-center justify-between border-b pb-2">
-                      <div>
-                        <p className="font-medium">{transaction.category}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {transaction.properties?.name} • {new Date(transaction.transaction_date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className={`font-bold ${transaction.transaction_type === "income" ? "text-green-600" : "text-red-600"}`}>
-                        {transaction.transaction_type === "income" ? "+" : "-"}${Number(transaction.amount).toLocaleString()}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-sm">No financial activity yet</p>
-              )}
-              <Button asChild className="w-full mt-4">
-                <Link to="/owner/financials">View All Transactions</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button asChild className="w-full" variant="outline">
-                  <Link to="/owner/properties">
-                    <Building2 className="mr-2 h-4 w-4" />
-                    Manage Properties
-                  </Link>
-                </Button>
-                <Button asChild className="w-full" variant="outline">
-                  <Link to="/owner/documents">
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Documents
-                  </Link>
-                </Button>
-                <Button asChild className="w-full" variant="outline">
-                  <Link to="/owner/communications">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Messages
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Maintenance Alerts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {maintenanceRequests && maintenanceRequests.length > 0 ? (
-                  <div className="space-y-3">
-                    {maintenanceRequests.slice(0, 3).map((request) => (
-                      <div key={request.id} className="border-l-4 border-orange-500 pl-3">
-                        <p className="font-medium text-sm">{request.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {request.properties?.name} • {request.status}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground text-sm">No pending maintenance</p>
-                )}
-              </CardContent>
-            </Card>
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-primary">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-white space-y-2">
+            <h1 className="text-3xl md:text-4xl font-bold">
+              Property Portfolio Overview
+            </h1>
+            <p className="text-xl text-white/90">
+              Welcome back, {profile?.first_name}! Comprehensive insights into your property investments
+            </p>
           </div>
         </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Real-time Financial Metrics */}
+        <div className="grid gap-6 md:grid-cols-4">
+          <Card className="bg-gradient-primary text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Portfolio Value</p>
+                  <p className="text-3xl font-bold">${portfolioValue.toLocaleString()}</p>
+                  <p className="text-xs text-white/80 mt-1">Total property value</p>
+                </div>
+                <DollarSign className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-success text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Monthly Revenue</p>
+                  <p className="text-3xl font-bold">${totalRevenue.toLocaleString()}</p>
+                  <p className="text-xs text-white/90 flex items-center gap-1 mt-1">
+                    <TrendingUp className="h-3 w-3" />
+                    +8.2% vs last month
+                  </p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-accent text-accent-foreground hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-accent-foreground/80 text-sm">Properties</p>
+                  <p className="text-3xl font-bold">{properties?.length || 0}</p>
+                  <p className="text-xs text-accent-foreground/80 mt-1">Active properties</p>
+                </div>
+                <Home className="w-8 h-8 text-accent-foreground/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Occupancy</p>
+                  <p className="text-3xl font-bold">94%</p>
+                  <p className="text-xs text-muted-foreground mt-1">Average rate</p>
+                </div>
+                <Users className="w-8 h-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Property Health & Maintenance Alerts */}
+        <Card className="shadow-soft hover:shadow-medium transition-smooth">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-primary" />
+              Property Health & Alerts
+            </CardTitle>
+            <CardDescription>Recent maintenance and inspection updates</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {maintenanceRequests && maintenanceRequests.length > 0 ? (
+                maintenanceRequests.slice(0, 3).map((alert) => (
+                  <div key={alert.id} className="flex items-center justify-between border-b pb-3 last:border-0 hover:bg-muted/30 p-3 rounded-lg transition-smooth">
+                    <div className="flex items-center gap-3">
+                      <Badge className={
+                        alert.priority === "high" ? "bg-destructive text-destructive-foreground" :
+                        alert.priority === "medium" ? "bg-warning text-warning-foreground" :
+                        "bg-success text-success-foreground"
+                      }>
+                        {alert.priority || 'normal'}
+                      </Badge>
+                      <div>
+                        <p className="font-medium text-foreground">{alert.title}</p>
+                        <p className="text-sm text-muted-foreground">{alert.properties?.name}</p>
+                      </div>
+                    </div>
+                    <span className="text-sm text-muted-foreground">{alert.status}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm text-center py-8">No pending maintenance</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Financial Activity */}
+        <Card className="shadow-soft hover:shadow-medium transition-smooth">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-primary" />
+              Recent Financial Activity
+            </CardTitle>
+            <CardDescription>Latest transactions and rent payments</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {financialData && financialData.length > 0 ? (
+                financialData.slice(0, 5).map((transaction) => (
+                  <div key={transaction.id} className="flex items-center justify-between hover:bg-muted/30 p-3 rounded-lg transition-smooth">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        transaction.transaction_type === "income" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
+                      }`}>
+                        {transaction.transaction_type === "income" ? <TrendingUp className="h-4 w-4" /> : <DollarSign className="h-4 w-4" />}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">{transaction.category}</p>
+                        <p className="text-sm text-muted-foreground">{transaction.properties?.name} • {new Date(transaction.transaction_date).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                    <span className={`font-semibold ${transaction.transaction_type === "income" ? "text-success" : "text-destructive"}`}>
+                      {transaction.transaction_type === "income" ? "+" : "-"}${Number(transaction.amount).toLocaleString()}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm text-center py-8">No financial activity yet</p>
+              )}
+            </div>
+            <Button asChild className="w-full mt-4">
+              <Link to="/owner/financials">View All Transactions</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="shadow-soft hover:shadow-medium transition-smooth">
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Manage your properties and communications</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3 md:grid-cols-3">
+            <Button asChild variant="outline" className="h-auto p-4 hover:shadow-soft transition-smooth">
+              <Link to="/owner/properties" className="flex flex-col items-center text-center space-y-2">
+                <Building2 className="w-5 h-5" />
+                <div>
+                  <div className="font-medium text-sm">Manage Properties</div>
+                  <div className="text-xs opacity-80">View all properties</div>
+                </div>
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="h-auto p-4 hover:shadow-soft transition-smooth">
+              <Link to="/owner/documents" className="flex flex-col items-center text-center space-y-2">
+                <FileText className="w-5 h-5" />
+                <div>
+                  <div className="font-medium text-sm">View Documents</div>
+                  <div className="text-xs opacity-80">Access property files</div>
+                </div>
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="h-auto p-4 hover:shadow-soft transition-smooth">
+              <Link to="/owner/communications" className="flex flex-col items-center text-center space-y-2">
+                <MessageSquare className="w-5 h-5" />
+                <div>
+                  <div className="font-medium text-sm">Messages</div>
+                  <div className="text-xs opacity-80">Communication center</div>
+                </div>
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

@@ -118,27 +118,70 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
-      <main className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Super Admin Dashboard</h1>
-          <p className="text-muted-foreground">Welcome, {profile?.first_name}! System overview and administration</p>
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-primary">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-white space-y-2">
+            <h1 className="text-3xl md:text-4xl font-bold">System Administration</h1>
+            <p className="text-xl text-white/90">Welcome, {profile?.first_name}! Platform monitoring, user management, and system analytics</p>
+          </div>
         </div>
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.description}</p>
-                <p className="text-xs text-primary mt-1">{stat.trend}</p>
-              </CardContent>
-            </Card>
-          ))}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        {/* System Analytics */}
+        <div className="grid gap-6 md:grid-cols-4">
+          <Card className="bg-gradient-primary text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Total Users</p>
+                  <p className="text-3xl font-bold">{totalUsers}</p>
+                  <p className="text-xs text-white/90 mt-1">{activeUsers} active</p>
+                </div>
+                <Users className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-success text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Properties</p>
+                  <p className="text-3xl font-bold">{totalProperties}</p>
+                  <p className="text-xs text-white/80 mt-1">System-wide</p>
+                </div>
+                <Building2 className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-accent text-accent-foreground hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-accent-foreground/80 text-sm">Companies</p>
+                  <p className="text-3xl font-bold">{totalCompanies}</p>
+                  <p className="text-xs text-accent-foreground/80 mt-1">Registered</p>
+                </div>
+                <Shield className="w-8 h-8 text-accent-foreground/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">System Alerts</p>
+                  <p className="text-3xl font-bold">{pendingMaintenance}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Pending items</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Management Tabs */}

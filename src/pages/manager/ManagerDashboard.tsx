@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import DashboardHeader from "@/components/DashboardHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Building2, DollarSign, AlertCircle, TrendingUp, Calendar, MessageSquare } from "lucide-react";
+import { Users, Building2, DollarSign, AlertCircle, TrendingUp, Calendar, MessageSquare, CheckCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -63,46 +63,91 @@ const ManagerDashboard = () => {
   const pendingMaintenance = maintenanceRequests?.filter(m => m.status === 'pending').length || 0;
   const unreadMessages = communications?.length || 0;
 
-  const stats = [
-    { title: "Total Clients", value: totalClients.toString(), icon: Users, description: "Active property owners", trend: "+2 this month" },
-    { title: "Properties Under Management", value: totalProperties.toString(), icon: Building2, description: "All properties", trend: `${properties?.filter(p => p.status === 'occupied').length || 0} occupied` },
-    { title: "Pending Tasks", value: pendingMaintenance.toString(), icon: AlertCircle, description: "Require attention", trend: "3 urgent" },
-    { title: "Unread Messages", value: unreadMessages.toString(), icon: MessageSquare, description: "New communications", trend: "From clients" },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
-      <main className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Property Manager Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {profile?.first_name}! Here's your portfolio overview</p>
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-primary">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-white space-y-2">
+            <h1 className="text-3xl md:text-4xl font-bold">
+              Manager Executive Dashboard
+            </h1>
+            <p className="text-xl text-white/90">
+              Welcome back, {profile?.first_name}! Comprehensive oversight of all properties and client portfolios
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.description}</p>
-                <p className="text-xs text-primary mt-1">{stat.trend}</p>
-              </CardContent>
-            </Card>
-          ))}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Performance Metrics */}
+        <div className="grid gap-6 md:grid-cols-4">
+          <Card className="bg-gradient-primary text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Active Clients</p>
+                  <p className="text-3xl font-bold">{totalClients}</p>
+                  <p className="text-xs text-white/80 mt-1">Property owners</p>
+                </div>
+                <Users className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-success text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Total Properties</p>
+                  <p className="text-3xl font-bold">{totalProperties}</p>
+                  <p className="text-xs text-white/90 flex items-center gap-1 mt-1">
+                    <TrendingUp className="h-3 w-3" />
+                    +3 this month
+                  </p>
+                </div>
+                <Building2 className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-accent text-accent-foreground hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-accent-foreground/80 text-sm">Tasks Completed</p>
+                  <p className="text-3xl font-bold">142</p>
+                  <p className="text-xs text-accent-foreground/80 mt-1">This month</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-accent-foreground/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Revenue</p>
+                  <p className="text-3xl font-bold">$284K</p>
+                  <p className="text-xs text-success flex items-center gap-1 mt-1">
+                    <TrendingUp className="h-3 w-3" />
+                    +12% vs last month
+                  </p>
+                </div>
+                <DollarSign className="w-8 h-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Today's Priorities */}
-          <Card>
+          <Card className="shadow-soft hover:shadow-medium transition-smooth">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-5 w-5 text-primary" />
                 Today's Priorities
               </CardTitle>
               <CardDescription>Tasks requiring immediate attention</CardDescription>
@@ -111,12 +156,12 @@ const ManagerDashboard = () => {
               {maintenanceRequests && maintenanceRequests.length > 0 ? (
                 <div className="space-y-3">
                   {maintenanceRequests.slice(0, 3).map((request) => (
-                    <div key={request.id} className="flex items-center justify-between border-b pb-2">
+                    <div key={request.id} className="flex items-center justify-between border-b pb-2 hover:bg-muted/30 p-2 rounded-lg transition-smooth">
                       <div>
                         <p className="text-sm font-medium">{request.title}</p>
                         <p className="text-xs text-muted-foreground">{request.properties?.name}</p>
                       </div>
-                      <Badge variant={request.priority === 'high' ? 'destructive' : 'secondary'}>
+                      <Badge className={request.priority === 'high' ? 'bg-destructive text-destructive-foreground' : 'bg-secondary text-secondary-foreground'}>
                         {request.status}
                       </Badge>
                     </div>
@@ -124,16 +169,16 @@ const ManagerDashboard = () => {
                   <Button variant="link" className="w-full">View All Tasks</Button>
                 </div>
               ) : (
-                <p className="text-muted-foreground text-sm">No urgent tasks</p>
+                <p className="text-muted-foreground text-sm text-center py-8">No urgent tasks</p>
               )}
             </CardContent>
           </Card>
 
           {/* Client Communications */}
-          <Card>
+          <Card className="shadow-soft hover:shadow-medium transition-smooth">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
+                <MessageSquare className="h-5 w-5 text-primary" />
                 Client Communications
               </CardTitle>
               <CardDescription>Recent unread messages</CardDescription>
@@ -142,7 +187,7 @@ const ManagerDashboard = () => {
               {communications && communications.length > 0 ? (
                 <div className="space-y-3">
                   {communications.slice(0, 3).map((comm) => (
-                    <div key={comm.id} className="border-b pb-2">
+                    <div key={comm.id} className="border-b pb-2 hover:bg-muted/30 p-2 rounded-lg transition-smooth">
                       <p className="text-sm font-medium">{comm.subject}</p>
                       <p className="text-xs text-muted-foreground">
                         From: {comm.profiles?.first_name} {comm.profiles?.last_name}
@@ -152,16 +197,16 @@ const ManagerDashboard = () => {
                   <Button variant="link" className="w-full">View All Messages</Button>
                 </div>
               ) : (
-                <p className="text-muted-foreground text-sm">No new messages</p>
+                <p className="text-muted-foreground text-sm text-center py-8">No new messages</p>
               )}
             </CardContent>
           </Card>
 
           {/* Performance Metrics */}
-          <Card>
+          <Card className="shadow-soft hover:shadow-medium transition-smooth">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+                <TrendingUp className="h-5 w-5 text-primary" />
                 Performance Metrics
               </CardTitle>
               <CardDescription>This month</CardDescription>
@@ -197,7 +242,7 @@ const ManagerDashboard = () => {
         </div>
 
         {/* Properties Portfolio */}
-        <Card>
+        <Card className="shadow-soft hover:shadow-medium transition-smooth">
           <CardHeader>
             <CardTitle>Properties Portfolio</CardTitle>
             <CardDescription>Quick overview of managed properties</CardDescription>
@@ -206,10 +251,10 @@ const ManagerDashboard = () => {
             {properties && properties.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {properties.slice(0, 6).map((property) => (
-                  <div key={property.id} className="border rounded-lg p-4">
+                  <div key={property.id} className="border rounded-lg p-4 hover:shadow-soft transition-smooth">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium">{property.name}</h4>
-                      <Badge variant={property.status === 'occupied' ? 'default' : 'secondary'}>
+                      <Badge className={property.status === 'occupied' ? 'bg-success text-success-foreground' : 'bg-secondary text-secondary-foreground'}>
                         {property.status}
                       </Badge>
                     </div>
@@ -222,7 +267,7 @@ const ManagerDashboard = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm">No properties under management</p>
+              <p className="text-muted-foreground text-sm text-center py-8">No properties under management</p>
             )}
           </CardContent>
         </Card>

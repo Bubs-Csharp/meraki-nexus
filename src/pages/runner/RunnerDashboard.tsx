@@ -82,26 +82,70 @@ const RunnerDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
-      <main className="container mx-auto p-4 md:p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Field Operations Dashboard</h1>
-          <p className="text-muted-foreground">Hello, {profile?.first_name}! Your schedule for today</p>
+      
+      {/* Hero Section */}
+      <div className="relative bg-gradient-primary">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-white space-y-2">
+            <h1 className="text-3xl md:text-4xl font-bold">Field Operations</h1>
+            <p className="text-xl text-white/90">Hello, {profile?.first_name}! Mobile-optimized tools for on-site property management</p>
+          </div>
         </div>
+      </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.description}</p>
-              </CardContent>
-            </Card>
-          ))}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        {/* Quick Stats */}
+        <div className="grid gap-6 md:grid-cols-4">
+          <Card className="bg-gradient-primary text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Today's Visits</p>
+                  <p className="text-3xl font-bold">{todayVisits}</p>
+                  <p className="text-xs text-white/80 mt-1">Properties scheduled</p>
+                </div>
+                <MapPin className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-success text-white hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">Completed</p>
+                  <p className="text-3xl font-bold">{completedTasks}</p>
+                  <p className="text-xs text-white/80 mt-1">This week</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-white/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-accent text-accent-foreground hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-accent-foreground/80 text-sm">Pending Tasks</p>
+                  <p className="text-3xl font-bold">{pendingTasks}</p>
+                  <p className="text-xs text-accent-foreground/80 mt-1">Active assignments</p>
+                </div>
+                <Clock className="w-8 h-8 text-accent-foreground/80" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="hover:shadow-medium transition-smooth">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-muted-foreground text-sm">Photos</p>
+                  <p className="text-3xl font-bold">{totalPhotos}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Uploaded this month</p>
+                </div>
+                <Camera className="w-8 h-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Quick Actions */}
