@@ -14,7 +14,10 @@ import OwnerFinancials from "./pages/owner/OwnerFinancials";
 import OwnerDocuments from "./pages/owner/OwnerDocuments";
 import OwnerCommunications from "./pages/owner/OwnerCommunications";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import ManagerClients from "./pages/manager/ManagerClients";
+import ManagerOperations from "./pages/manager/ManagerOperations";
 import RunnerDashboard from "./pages/runner/RunnerDashboard";
+import RunnerInspections from "./pages/runner/RunnerInspections";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { useAuth } from "./hooks/useAuth";
 
@@ -118,6 +121,22 @@ const App = () => (
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/manager/clients"
+            element={
+              <ProtectedRoute allowedRoles={["property_manager"]}>
+                <ManagerClients />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/operations"
+            element={
+              <ProtectedRoute allowedRoles={["property_manager"]}>
+                <ManagerOperations />
+              </ProtectedRoute>
+            }
+          />
           
           {/* Property Runner Routes */}
           <Route
@@ -125,6 +144,14 @@ const App = () => (
             element={
               <ProtectedRoute allowedRoles={["property_runner"]}>
                 <RunnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/runner/inspections"
+            element={
+              <ProtectedRoute allowedRoles={["property_runner"]}>
+                <RunnerInspections />
               </ProtectedRoute>
             }
           />
